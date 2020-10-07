@@ -70,12 +70,12 @@
                                 <div id="collapseOne" class="collapse show" aria-labelledby="headingOne"
                                     data-parent="#accordionExample">
                                     <div class="card-body">
-                                        <div class="form-group">
+                                        <div class="form-groupOthers">
                                             <label for="">Enter your text</label>
                                             <input id="textInput" type="text" class="form-control"
                                                 onkeyup="changeText()" />
                                         </div>
-                                        <div class="form-group">
+                                        <div class="form-groupOthers">
                                             <label for="">Font Type</label>
                                             <select id="fontType" class="form-control" onchange="changeFontStyle()">
                                                 <option value="helvetiker_regular.typeface">Helvetica</option>
@@ -90,14 +90,19 @@
                                             </select>
                                         </div>
                                         <div class="form-row">
-                                            <div class="form-group col">
+                                            <div class="form-groupOthers col">
                                                 <label for="">Change Text Color</label>
                                                 <div class="color-picker shadow"></div>
                                             </div>
-                                            <div class="form-group col">
+                                            <div class="form-groupOthers col">
                                                 <label for="">Enter Text Height</label>
                                                 <input id="fontHeight" style="max-width: 50px;" type="number"
                                                     class="form-control" onkeyup="updateFontHeight()" />
+                                            </div>
+                                            <div class="form-groupOthers col">
+                                                <label for="">Enter Character Space</label>
+                                                <input id="characterOffset" style="max-width: 50px;" type="number"
+                                                    class="form-control" onkeyup="changeCharacterOffset()" />
                                             </div>
                                         </div>
                                     </div>
@@ -116,7 +121,7 @@
                                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
                                     data-parent="#accordionExample">
                                     <div class="card-body">
-                                        <div class="form-group">
+                                        <div class="form-groupOthers">
                                             <label for="">Material</label>
                                             <select id="material" class="form-control" onchange="changeMaterial()">
                                                 <option value="metal">Metal</option>
@@ -189,6 +194,7 @@
         }
         function addAmbientLight({ intensity = 1, color = 0xffffff }) {
             var light = new THREE.AmbientLight({ color: 0x404040, intensity: parseInt(intensity) }); // soft white light
+            light.name = "Main Ambient Light"
             scene.add(light)
             return light;
         }
@@ -199,6 +205,7 @@
         }
         function addSpotLight(x = 0, y = 0, z = 0) {
             var spotLight = new THREE.SpotLight(0xffffff);
+            spotLight.name = "Front Spot Light"
             spotLight.castShadow = true;
             spotLight.position.set(x, y, z);
             scene.add(spotLight);
@@ -209,9 +216,10 @@
             let geometry = new THREE.BoxGeometry(refDimension.x + 25, refDimension.y + 25, 2);
             let material = new THREE.MeshStandardMaterial({ color: 0x234e85 });
             let mesh = new THREE.Mesh(geometry, material);
-            mesh.position.z = font.mesh.position.z - 1;
-            mesh.position.x = Math.abs(font.mesh.position.x + refDimension.x / 2);
-            mesh.position.y = Math.abs(font.mesh.position.y + refDimension.y / 2);
+            mesh.name = 'board'
+            // mesh.position.z = font.mesh.position.z - 1;
+            // mesh.position.x = Math.abs(font.mesh.position.x + refDimension.x / 2);
+            // mesh.position.y = Math.abs(font.mesh.position.y + refDimension.y / 2);
             return mesh;
         }
         function updateFont(updates = {}) {
@@ -236,30 +244,67 @@
             }
         }
         function RefreshFont() {
-            group.remove(font.mesh);
+            // group.children.forEach(item => {
+            //     console.log(item)
+            // })
+            group.remove(font.charGroup);
             group.remove(board)
-            createText();
+            createChars();
+            // createText()
         }
-        function createText() {
-            font.geometry = getFontGeometry();
+        // function createText() {
+        //     font.geometry = getFontGeometry();
+        //     font.material = getFontMaterial();
+        //     // var normalMap = THREE.ImageUtils.loadTexture('./textures/Pebbles/Pebbles_022_Normal.jpg');
+        //     // normalMap.wrapS = normalMap.wrapT = THREE.RepeatWrapping;
+        //     // normalMap.repeat.set(0.05, 0.05);
+        //     font.mesh = new THREE.Mesh(font.geometry, new THREE.MeshStandardMaterial(font.material));
+        //     font.dimension = new THREE.Box3().setFromObject(font.mesh).getSize();
+        //     font.mesh.position.x = -Math.abs(font.dimension.x / 2)
+        //     groupOthers.add(font.mesh)
+        //     board = createBoard(font.dimension);
+        //     groupOthers.add(board)
+        //     // add board
+        //     // var edges = new THREE.EdgesGeometry(textGeo);
+        //     // var line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffffff }));
+        //     // line.position.z = font.mesh.position.z;
+        //     // line.position.x = font.mesh.position.x;
+        //     // line.position.y = font.mesh.position.y;
+        //     // groupOthers.add(line);
+        // }
+        function createChars() {
+            let fontGeometries = getCharGeometryArray();
             font.material = getFontMaterial();
-            // var normalMap = THREE.ImageUtils.loadTexture('./textures/Pebbles/Pebbles_022_Normal.jpg');
-            // normalMap.wrapS = normalMap.wrapT = THREE.RepeatWrapping;
-            // normalMap.repeat.set(0.05, 0.05);
-            font.mesh = new THREE.Mesh(font.geometry, new THREE.MeshStandardMaterial(font.material));
-            font.dimension = new THREE.Box3().setFromObject(font.mesh).getSize();
-            font.mesh.position.x = -Math.abs(font.dimension.x / 2)
-            group.add(font.mesh)
-            board = createBoard(font.dimension);
-            group.add(board)
-            // add board
-
-            // var edges = new THREE.EdgesGeometry(textGeo);
-            // var line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffffff }));
-            // line.position.z = font.mesh.position.z;
-            // line.position.x = font.mesh.position.x;
-            // line.position.y = font.mesh.position.y;
-            // group.add(line);
+            let prevCharsTotalWidth = 0;
+            let charGroup = new THREE.Group();
+            charGroup.name = "Characters";
+            for (let i = 0; fontGeometries.length > i; i++) {
+                let mesh = new THREE.Mesh(fontGeometries[i], new THREE.MeshStandardMaterial(font.material))
+                mesh.position.x = prevCharsTotalWidth;
+                prevCharsTotalWidth = prevCharsTotalWidth + new THREE.Box3().setFromObject(mesh).getSize().x + font.charOffset;
+                charGroup.add(mesh);
+            };
+            let groupDimension = new THREE.Box3().setFromObject(charGroup).getSize();
+            charGroup.position.x = charGroup.position.x - (groupDimension.x / 2)
+            charGroup.position.y = charGroup.position.y - (groupDimension.y / 2)
+            // console.log(groupDimension.x / 2)
+            board = createBoard(groupDimension);
+            group.add(board);
+            font.charGroup = charGroup;
+            group.add(charGroup)
+            scene.add(group)
+        }
+        function getCharGeometryArray() {
+            let charGeos = [];
+            for (var i = 0; font.text.length > i; i++) {
+                charGeos.push(new THREE.TextBufferGeometry(font.text.charAt(i), {
+                    font: font.geometry,
+                    size: font.size,
+                    height: font.height,
+                    curveSegments: font.curveSegments,
+                }))
+            }
+            return charGeos;
         }
         function getFontGeometry() {
             geometry = new THREE.TextBufferGeometry(font.text, {
@@ -348,15 +393,21 @@
             })
         }
         function updateFontHeight() {
-            if (!(document.getElementById('fontHeight').value < 3)) {
-                updateFont({ height: document.getElementById('fontHeight').value });
+            let height = document.getElementById('fontHeight').value
+            if (!(height < 3)) {
+                updateFont({ height: parsetInt(height) });
             }
             // console.log(document.getElementById('fontHeight'))
+        }
+        function changeCharacterOffset() {
+            let offset = document.getElementById('characterOffset').value;
+            if (offset) updateFont({ charOffset: parseInt(offset) });
         }
     </script>
     <script>
         createPicker();
         var group = new THREE.Group();
+        group.name = 'Flex'
         var scene = createScene({ background: parseInt(0xEAEAEA) });
         var renderer = createRenderer({ dimension: { width: 600, height: 300 }, antialias: true, shadowMap: true });
         var camera = createCamera({ fov: 75, aspect: (600 / 300) });
@@ -375,6 +426,8 @@
             type: 'helvetiker_regular',
             text: 'HELLO',
             dimension: null,
+            charOffset: 3,
+            letCharGroup: null,
         }
         var board;
         var baseMaterials = {
