@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banner</title>
+    <link rel="stylesheet" href="./css/colorPicker.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <style>
+        canvas:focus {
+            outline: none;
+        }
+
+        #render {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <a class="navbar-brand" href="#">Flex Designer</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="./index.html">Home <span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Products</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./design.html">Design</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <section>
+            <div class="container">
+                <div class="row mt-5">
+                    <div class="col-md-12">
+                        <div id="render"></div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="accordion" id="accordionExample">
+                            <div class="card">
+                                <div class="card-header" id="headingOne">
+                                    <h2 class="mb-0">
+                                        <button class="btn btn-link btn-block text-left" type="button"
+                                            data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
+                                            aria-controls="collapseOne">
+                                            Text
+                                        </button>
+                                    </h2>
+                                </div>
+
+                                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne"
+                                    data-parent="#accordionExample">
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label for="">Enter your text</label>
+                                            <input id="textInput" type="text" class="form-control"
+                                                onkeyup="changeText()" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="">Font Type</label>
+                                            <select id="fontType" class="form-control" onchange="changeFontStyle()">
+                                                <option value="helvetiker_regular.typeface">Helvetica</option>
+                                                <option value="Quilline Script Thin_Regular.typeface">Quilline Script
+                                                </option>
+                                                <option value="Deftone Stylus_Regular.typeface">Deftone Stylus</option>
+                                                <option value="Black Jack_Regular.typeface">Black Jack</option>
+                                                <option value="Youre Gone_Regular.typeface">Youre GOne</option>
+                                                <option value="Alba_Regular">Alba Regular</option>
+                                                <option value="NokiaKokia_Regular">Nokia Regular</option>
+                                                <option value="Heebo_Regular">Heebo_Regular</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="">Change Text Color</label>
+                                            <div class="color-picker"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header" id="headingTwo">
+                                    <h2 class="mb-0">
+                                        <button class="btn btn-link btn-block text-left collapsed" type="button"
+                                            data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false"
+                                            aria-controls="collapseTwo">
+                                            Material
+                                        </button>
+                                    </h2>
+                                </div>
+                                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
+                                    data-parent="#accordionExample">
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label for="">Material</label>
+                                            <select id="material" class="form-control" onchange="changeMaterial()">
+                                                <option value="metal">Metal</option>
+                                                <option value="wood">Wood</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
+    <script src="./node_modules/three/build/three.min.js"></script>
+    <script src="./node_modules/three/examples/js/controls/OrbitControls.js"></script>
+    <script src="./js/colorPicker.js"></script>
+    <script>
+        createPicker();
+        var group = new THREE.Group();
+        var scene = createScene({ background: parseInt(0xEAEAEA) });
+        var renderer = createRenderer({ dimension: { width: 600, height: 300 }, antialias: true, shadowMap: true });
+        var camera = createCamera({ fov: 75, aspect: (600 / 300) });
+        var controls = createOrbitControl(camera, renderer.domElement);
+        addAmbientLight({ intensity: 1, color: 0x404040 });
+        addSpotLight(30, 30, 100);
+        var Board;
+        var baseMaterials = {
+            metal: {
+                map: new THREE.ImageUtils.loadTexture('./textures/metal/Old_iron_01_1K_Base_Color.png'),
+                normalMap: new THREE.ImageUtils.loadTexture('./textures/metal/Old_iron_01_1K_Normal.png'),
+                displacementMap: new THREE.ImageUtils.loadTexture('./textures/metal/Old_iron_01_1K_Height.png'),
+                bumpMap: new THREE.ImageUtils.loadTexture('./textures/metal/Old_iron_01_1K_Roughness.png'),
+                metalness: 0.7,
+                roughness: 0.5,
+                // color: 0xFFFFFF00
+            },
+            wood: {
+                map: new THREE.ImageUtils.loadTexture('./textures/wood/Bark_09_1K_Base_Color.png'),
+                normalMap: new THREE.ImageUtils.loadTexture('./textures/wood/Bark_09_1K_Normal.png'),
+                displacementMap: new THREE.ImageUtils.loadTexture('./textures/wood/Bark_09_1K_Height.png'),
+                bumpMap: new THREE.ImageUtils.loadTexture('./textures/wood/Bark_09_1K_Height.png'),
+                metalness: 0,
+                roughness: 07,
+                // color: 0xFFFFFF00
+            }
+        }
+        var baseMaterial = 'metal';
+        var textContent = 'hello';
+        var textMesh;
+        var textGeo;
+        var FontColor = 0xB9B9B9;
+        var FontType = 'helvetiker_regular.typeface';
+        loadFont()
+        scene.add(group);
+        // animate function
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+            controls.update();
+        }
+        animate();
+        function createCamera({
+            fov = 75,
+            aspect = window.innerWidth / window.innerHeight,
+            near = 0.1,
+            far = 1000,
+            position = { x: 0, y: 0, z: 60 }
+        }) {
+            let camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+            camera.position.x = position.x
+            camera.position.y = position.y
+            camera.position.z = position.z
+            return camera
+        }
+        function createScene({
+            background = 0xFFFFFF,
+        }) {
+            scene = new THREE.Scene();
+            scene.background = background;
+            return scene;
+        }
+        function createRenderer({
+            dimension = { width: window.innerWidth, height: window.innerHeight },
+            antialias = false,
+            shadowMap = false,
+            element = document.getElementById('render')
+        }) {
+            var renderer = new THREE.WebGLRenderer({ antialias: antialias });
+            renderer.setSize(dimension.width, dimension.height);
+            renderer.antialias = antialias
+            renderer.shadowMap.enabled = shadowMap;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            element.appendChild(renderer.domElement);
+            return renderer
+        }
+        function addAmbientLight({ intensity = 1, color = 0xffffff }) {
+            var light = new THREE.AmbientLight({ color: 0x404040, intensity: parseInt(intensity) }); // soft white light
+            scene.add(light)
+            return light;
+        }
+        function createOrbitControl(camera, element) {
+            var controls = new THREE.OrbitControls(camera, element);
+            controls.update();
+            return controls;
+        }
+        function loadFont() {
+            new THREE.FontLoader().load(`./fonts/${FontType}.json`, response => { font = response; RefreshFont() })
+        }
+        function RefreshFont() {
+            group.remove(textMesh);
+            group.remove(Board)
+            createText();
+        }
+        function createText() {
+            textGeo = new THREE.TextGeometry(textContent, {
+                font,
+                size: 18,
+                height: 5,
+                curveSegments: 8,
+            });
+            var textMaterial = {};
+            textMaterial.color = parseInt(FontColor);
+            Object.keys(baseMaterials[baseMaterial]).forEach(key => {
+                textMaterial.emissive = 0x00000;
+                textMaterial.emissiveIntensity = 1;
+                textMaterial.roughness = 0.1;
+                textMaterial.metalness = .5
+                // console.log(baseMaterials[baseMaterial][key])
+                // if (key == 'displacementMap') return;
+                // if(key == 'metalness')  return textMaterial[key] = baseMaterials[baseMaterial][key];
+                // if(key == 'roughness')  return textMaterial[key] = baseMaterials[baseMaterial][key];
+                // textMaterial[key] = baseMaterials[baseMaterial][key];
+                // textMaterial[key].wrapS = textMaterial[key].wrapT = THREE.RepeatWrapping;
+                // textMaterial[key].repeat.set(0.20, 0.10);
+            })
+            // console.log(textMaterial)
+            // var normalMap = THREE.ImageUtils.loadTexture('./textures/Pebbles/Pebbles_022_Normal.jpg');
+            // normalMap.wrapS = normalMap.wrapT = THREE.RepeatWrapping;
+            // normalMap.repeat.set(0.05, 0.05);
+            textMesh = new THREE.Mesh(textGeo, new THREE.MeshStandardMaterial(textMaterial))
+            var textDimension = new THREE.Box3().setFromObject(textMesh).getSize()
+            textMesh.position.x = -Math.abs(textDimension.x / 2)
+            group.add(textMesh)
+            // add board
+            Board = new THREE.Mesh(new THREE.BoxGeometry(textDimension.x + 25, textDimension.y + 25, 2), new THREE.MeshStandardMaterial({
+                color: 0x234e85,
+            }))
+            Board.position.z = textMesh.position.z - 1;
+            Board.position.x = Math.abs(textMesh.position.x + textDimension.x / 2);
+            Board.position.y = Math.abs(textMesh.position.y + textDimension.y / 2);
+            group.add(Board)
+
+            // var edges = new THREE.EdgesGeometry(textGeo);
+            // var line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffffff }));
+            // line.position.z = textMesh.position.z;
+            // line.position.x = textMesh.position.x;
+            // line.position.y = textMesh.position.y;
+            // group.add(line);
+        }
+        function addSpotLight(x = 0, y = 0, z = 0) {
+            var spotLight = new THREE.SpotLight(0xffffff);
+            spotLight.castShadow = true;
+            spotLight.position.set(x, y, z);
+            scene.add(spotLight);
+            // var spotLightHelper = new THREE.SpotLightHelper(spotLight);
+            // scene.add(spotLightHelper);
+        }
+        function updateFont() {
+        }
+        function changeText() {
+            textContent = document.getElementById('textInput').value;
+            loadFont()
+        }
+        function changeFontStyle() {
+            FontType = document.getElementById('fontType').value;
+            loadFont()
+        }
+        function ChangeFontColor(hex) {
+            FontColor = `0x${hex}`;
+            loadFont()
+        }
+        function changeMaterial() {
+            baseMaterial = document.getElementById('material').value
+            loadFont()
+        }
+        function createPicker() {
+            Pickr.create({
+                el: '.color-picker',
+                theme: 'nano',
+                swatches: [
+                    'rgba(244, 67, 54, 1)',
+                    'rgba(233, 30, 99, 0.95)',
+                    'rgba(156, 39, 176, 0.9)',
+                    'rgba(103, 58, 183, 0.85)',
+                    'rgba(63, 81, 181, 0.8)',
+                    'rgba(33, 150, 243, 0.75)',
+                    'rgba(3, 169, 244, 0.7)',
+                    'rgba(0, 188, 212, 0.7)',
+                    'rgba(0, 150, 136, 0.75)',
+                    'rgba(76, 175, 80, 0.8)',
+                    'rgba(139, 195, 74, 0.85)',
+                    'rgba(205, 220, 57, 0.9)',
+                    'rgba(255, 235, 59, 0.95)',
+                    'rgba(255, 193, 7, 1)'
+                ],
+
+                components: {
+
+                    // Main components
+                    preview: true,
+                    opacity: true,
+                    hue: true,
+
+                    // Input / output Options
+                    interaction: {
+                        hex: true,
+                        rgba: true,
+                        hsla: true,
+                        hsva: true,
+                        cmyk: true,
+                        input: true,
+                        clear: true,
+                        save: true
+                    }
+                }
+            }).on('save', (instance) => {
+                ChangeFontColor(instance.toHEXA().toString().replace('#', ''))
+                pickr.hide()
+            })
+        }
+    </script>
+</body>
+
+</html>
