@@ -48,13 +48,13 @@
         </div>
     </header>
     <main>
-        <section>
+        <section class="py-5 my-5">
             <div class="container">
                 <div class="row mt-5">
-                    <div class="col-md-12">
+                    <div class="col-md-6 order-2">
                         <div id="render"></div>
                     </div>
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                         <div class="accordion" id="accordionExample">
                             <div class="card">
                                 <div class="card-header" id="headingOne">
@@ -89,9 +89,16 @@
                                                 <option value="Heebo_Regular">Heebo_Regular</option>
                                             </select>
                                         </div>
-                                        <div class="form-group">
-                                            <label for="">Change Text Color</label>
-                                            <div class="color-picker"></div>
+                                        <div class="form-row">
+                                            <div class="form-group col">
+                                                <label for="">Change Text Color</label>
+                                                <div class="color-picker shadow"></div>
+                                            </div>
+                                            <div class="form-group col">
+                                                <label for="">Enter Text Height</label>
+                                                <input id="fontHeight" style="max-width: 50px;" type="number"
+                                                    class="form-control" onkeyup="updateFontHeight()" />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -141,56 +148,17 @@
     <script src="./node_modules/three/examples/js/controls/OrbitControls.js"></script>
     <script src="./js/colorPicker.js"></script>
     <script>
-        createPicker();
-        var group = new THREE.Group();
-        var scene = createScene({ background: parseInt(0xEAEAEA) });
-        var renderer = createRenderer({ dimension: { width: 600, height: 300 }, antialias: true, shadowMap: true });
-        var camera = createCamera({ fov: 75, aspect: (600 / 300) });
-        var controls = createOrbitControl(camera, renderer.domElement);
-        addAmbientLight({ intensity: 1, color: 0x404040 });
-        addSpotLight(30, 30, 100);
-        var Board;
-        var baseMaterials = {
-            metal: {
-                map: new THREE.ImageUtils.loadTexture('./textures/metal/Old_iron_01_1K_Base_Color.png'),
-                normalMap: new THREE.ImageUtils.loadTexture('./textures/metal/Old_iron_01_1K_Normal.png'),
-                displacementMap: new THREE.ImageUtils.loadTexture('./textures/metal/Old_iron_01_1K_Height.png'),
-                bumpMap: new THREE.ImageUtils.loadTexture('./textures/metal/Old_iron_01_1K_Roughness.png'),
-                metalness: 0.7,
-                roughness: 0.5,
-                // color: 0xFFFFFF00
-            },
-            wood: {
-                map: new THREE.ImageUtils.loadTexture('./textures/wood/Bark_09_1K_Base_Color.png'),
-                normalMap: new THREE.ImageUtils.loadTexture('./textures/wood/Bark_09_1K_Normal.png'),
-                displacementMap: new THREE.ImageUtils.loadTexture('./textures/wood/Bark_09_1K_Height.png'),
-                bumpMap: new THREE.ImageUtils.loadTexture('./textures/wood/Bark_09_1K_Height.png'),
-                metalness: 0,
-                roughness: 07,
-                // color: 0xFFFFFF00
-            }
-        }
-        var baseMaterial = 'metal';
-        var textContent = 'hello';
-        var textMesh;
-        var textGeo;
-        var FontColor = 0xB9B9B9;
-        var FontType = 'helvetiker_regular.typeface';
-        loadFont()
-        scene.add(group);
-        // animate function
         function animate() {
             requestAnimationFrame(animate);
             renderer.render(scene, camera);
             controls.update();
         }
-        animate();
         function createCamera({
             fov = 75,
             aspect = window.innerWidth / window.innerHeight,
             near = 0.1,
             far = 1000,
-            position = { x: 0, y: 0, z: 60 }
+            position = { x: 0, y: 0, z: 100 }
         }) {
             let camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
             camera.position.x = position.x
@@ -229,60 +197,6 @@
             controls.update();
             return controls;
         }
-        function loadFont() {
-            new THREE.FontLoader().load(`./fonts/${FontType}.json`, response => { font = response; RefreshFont() })
-        }
-        function RefreshFont() {
-            group.remove(textMesh);
-            group.remove(Board)
-            createText();
-        }
-        function createText() {
-            textGeo = new THREE.TextGeometry(textContent, {
-                font,
-                size: 18,
-                height: 5,
-                curveSegments: 8,
-            });
-            var textMaterial = {};
-            textMaterial.color = parseInt(FontColor);
-            Object.keys(baseMaterials[baseMaterial]).forEach(key => {
-                textMaterial.emissive = 0x00000;
-                textMaterial.emissiveIntensity = 1;
-                textMaterial.roughness = 0.1;
-                textMaterial.metalness = .5
-                // console.log(baseMaterials[baseMaterial][key])
-                // if (key == 'displacementMap') return;
-                // if(key == 'metalness')  return textMaterial[key] = baseMaterials[baseMaterial][key];
-                // if(key == 'roughness')  return textMaterial[key] = baseMaterials[baseMaterial][key];
-                // textMaterial[key] = baseMaterials[baseMaterial][key];
-                // textMaterial[key].wrapS = textMaterial[key].wrapT = THREE.RepeatWrapping;
-                // textMaterial[key].repeat.set(0.20, 0.10);
-            })
-            // console.log(textMaterial)
-            // var normalMap = THREE.ImageUtils.loadTexture('./textures/Pebbles/Pebbles_022_Normal.jpg');
-            // normalMap.wrapS = normalMap.wrapT = THREE.RepeatWrapping;
-            // normalMap.repeat.set(0.05, 0.05);
-            textMesh = new THREE.Mesh(textGeo, new THREE.MeshStandardMaterial(textMaterial))
-            var textDimension = new THREE.Box3().setFromObject(textMesh).getSize()
-            textMesh.position.x = -Math.abs(textDimension.x / 2)
-            group.add(textMesh)
-            // add board
-            Board = new THREE.Mesh(new THREE.BoxGeometry(textDimension.x + 25, textDimension.y + 25, 2), new THREE.MeshStandardMaterial({
-                color: 0x234e85,
-            }))
-            Board.position.z = textMesh.position.z - 1;
-            Board.position.x = Math.abs(textMesh.position.x + textDimension.x / 2);
-            Board.position.y = Math.abs(textMesh.position.y + textDimension.y / 2);
-            group.add(Board)
-
-            // var edges = new THREE.EdgesGeometry(textGeo);
-            // var line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffffff }));
-            // line.position.z = textMesh.position.z;
-            // line.position.x = textMesh.position.x;
-            // line.position.y = textMesh.position.y;
-            // group.add(line);
-        }
         function addSpotLight(x = 0, y = 0, z = 0) {
             var spotLight = new THREE.SpotLight(0xffffff);
             spotLight.castShadow = true;
@@ -291,18 +205,96 @@
             // var spotLightHelper = new THREE.SpotLightHelper(spotLight);
             // scene.add(spotLightHelper);
         }
-        function updateFont() {
+        function createBoard(refDimension) {
+            let geometry = new THREE.BoxGeometry(refDimension.x + 25, refDimension.y + 25, 2);
+            let material = new THREE.MeshStandardMaterial({ color: 0x234e85 });
+            let mesh = new THREE.Mesh(geometry, material);
+            mesh.position.z = font.mesh.position.z - 1;
+            mesh.position.x = Math.abs(font.mesh.position.x + refDimension.x / 2);
+            mesh.position.y = Math.abs(font.mesh.position.y + refDimension.y / 2);
+            return mesh;
+        }
+        function updateFont(updates = {}) {
+            let currentFont = font;
+            Object.keys(updates).map(key => {
+                if (currentFont[key]) currentFont[key] = updates[key]
+            })
+            font = currentFont;
+            loadFont();
+        }
+        function loadFont() {
+            new THREE.FontLoader().load(`./fonts/${font.type}.json`, (response) => {
+                font.geometry = response;
+                RefreshFont();
+            })
         }
         function changeText() {
-            textContent = document.getElementById('textInput').value;
-            loadFont()
+            let string = document.getElementById('textInput').value;
+            if (string.length) {
+                updateFont({ text: document.getElementById('textInput').value });
+                loadFont();
+            }
+        }
+        function RefreshFont() {
+            group.remove(font.mesh);
+            group.remove(board)
+            createText();
+        }
+        function createText() {
+            font.geometry = getFontGeometry();
+            font.material = getFontMaterial();
+            // var normalMap = THREE.ImageUtils.loadTexture('./textures/Pebbles/Pebbles_022_Normal.jpg');
+            // normalMap.wrapS = normalMap.wrapT = THREE.RepeatWrapping;
+            // normalMap.repeat.set(0.05, 0.05);
+            font.mesh = new THREE.Mesh(font.geometry, new THREE.MeshStandardMaterial(font.material));
+            font.dimension = new THREE.Box3().setFromObject(font.mesh).getSize();
+            font.mesh.position.x = -Math.abs(font.dimension.x / 2)
+            group.add(font.mesh)
+            board = createBoard(font.dimension);
+            group.add(board)
+            // add board
+
+            // var edges = new THREE.EdgesGeometry(textGeo);
+            // var line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffffff }));
+            // line.position.z = font.mesh.position.z;
+            // line.position.x = font.mesh.position.x;
+            // line.position.y = font.mesh.position.y;
+            // group.add(line);
+        }
+        function getFontGeometry() {
+            geometry = new THREE.TextBufferGeometry(font.text, {
+                font: font.geometry,
+                size: font.size,
+                height: font.height,
+                curveSegments: font.curveSegments,
+            });
+            return geometry;
+        }
+        function getFontMaterial() {
+            let parameters = {};
+            Object.keys(baseMaterials[font.baseMaterial]).forEach(key => {
+                parameters.emissive = 0x00000;
+                parameters.emissiveIntensity = 1;
+                parameters.roughness = 0.1;
+                parameters.metalness = .5
+                // console.log(baseMaterials[baseMaterial][key])
+                // if (key == 'displacementMap') return;
+                // if(key == 'metalness')  return textMaterial[key] = baseMaterials[baseMaterial][key];
+                // if(key == 'roughness')  return textMaterial[key] = baseMaterials[baseMaterial][key];
+                // textMaterial[key] = baseMaterials[baseMaterial][key];
+                // textMaterial[key].wrapS = textMaterial[key].wrapT = THREE.RepeatWrapping;
+                // textMaterial[key].repeat.set(0.20, 0.10);
+            })
+            parameters.color = parseInt(font.color);
+            let material = new THREE.MeshStandardMaterial(parameters);
+            return material;
         }
         function changeFontStyle() {
-            FontType = document.getElementById('fontType').value;
+            updateFont({ type: document.getElementById('fontType').value })
             loadFont()
         }
         function ChangeFontColor(hex) {
-            FontColor = `0x${hex}`;
+            updateFont({ color: parseInt(`0x${hex}`) });
             loadFont()
         }
         function changeMaterial() {
@@ -310,7 +302,7 @@
             loadFont()
         }
         function createPicker() {
-            Pickr.create({
+            const pickr = Pickr.create({
                 el: '.color-picker',
                 theme: 'nano',
                 swatches: [
@@ -349,12 +341,67 @@
                         save: true
                     }
                 }
-            }).on('save', (instance) => {
+            })
+            pickr.on('save', (instance) => {
                 ChangeFontColor(instance.toHEXA().toString().replace('#', ''))
                 pickr.hide()
             })
         }
+        function updateFontHeight() {
+            if (!(document.getElementById('fontHeight').value < 3)) {
+                updateFont({ height: document.getElementById('fontHeight').value });
+            }
+            // console.log(document.getElementById('fontHeight'))
+        }
     </script>
+    <script>
+        createPicker();
+        var group = new THREE.Group();
+        var scene = createScene({ background: parseInt(0xEAEAEA) });
+        var renderer = createRenderer({ dimension: { width: 600, height: 300 }, antialias: true, shadowMap: true });
+        var camera = createCamera({ fov: 75, aspect: (600 / 300) });
+        var controls = createOrbitControl(camera, renderer.domElement);
+        addAmbientLight({ intensity: 1, color: 0x404040 });
+        addSpotLight(30, 30, 100);
+        var font = {
+            size: 18,
+            height: 5,
+            geometry: null,
+            material: null,
+            mesh: null,
+            color: 0xB9B9B9,
+            curveSegments: 8,
+            baseMaterial: 'metal',
+            type: 'helvetiker_regular',
+            text: 'HELLO',
+            dimension: null,
+        }
+        var board;
+        var baseMaterials = {
+            metal: {
+                map: new THREE.ImageUtils.loadTexture('./textures/metal/Old_iron_01_1K_Base_Color.png'),
+                normalMap: new THREE.ImageUtils.loadTexture('./textures/metal/Old_iron_01_1K_Normal.png'),
+                displacementMap: new THREE.ImageUtils.loadTexture('./textures/metal/Old_iron_01_1K_Height.png'),
+                bumpMap: new THREE.ImageUtils.loadTexture('./textures/metal/Old_iron_01_1K_Roughness.png'),
+                metalness: 0.7,
+                roughness: 0.5,
+                // color: 0xFFFFFF00
+            },
+            wood: {
+                map: new THREE.ImageUtils.loadTexture('./textures/wood/Bark_09_1K_Base_Color.png'),
+                normalMap: new THREE.ImageUtils.loadTexture('./textures/wood/Bark_09_1K_Normal.png'),
+                displacementMap: new THREE.ImageUtils.loadTexture('./textures/wood/Bark_09_1K_Height.png'),
+                bumpMap: new THREE.ImageUtils.loadTexture('./textures/wood/Bark_09_1K_Height.png'),
+                metalness: 0,
+                roughness: 07,
+                // color: 0xFFFFFF00
+            }
+        }
+        loadFont()
+        scene.add(group);
+        animate();
+    </script>
+
 </body>
 
 </html>
