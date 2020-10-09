@@ -96,12 +96,12 @@
                                             </div>
                                             <div class="form-groupOthers col">
                                                 <label for="">Enter Text Height</label>
-                                                <input id="fontHeight" style="max-width: 50px;" type="number"
+                                                <input id="fontHeight" style="max-width: 80px;" type="number"
                                                     class="form-control" onkeyup="updateFontHeight()" />
                                             </div>
                                             <div class="form-groupOthers col">
                                                 <label for="">Enter Character Space</label>
-                                                <input id="characterOffset" style="max-width: 50px;" type="number"
+                                                <input id="characterOffset" style="max-width: 80px;" type="number"
                                                     class="form-control" onkeyup="changeCharacterOffset()" />
                                             </div>
                                         </div>
@@ -203,17 +203,38 @@
             controls.update();
             return controls;
         }
-        function addSpotLight(x = 0, y = 0, z = 0) {
+        function addSpotLight({ x = 0, y = 0, z = 0, intensity = 1, helper = false }) {
             var spotLight = new THREE.SpotLight(0xffffff);
             spotLight.name = "Front Spot Light"
             spotLight.castShadow = true;
+            spotLight.intensity = intensity
             spotLight.position.set(x, y, z);
-            scene.add(spotLight);
+            if (helper) {
+                scene.add(new THREE.SpotLightHelper(spotLight))
+            } else {
+                scene.add(spotLight);
+            }
+            // var spotLightHelper = new THREE.SpotLightHelper(spotLight);
+            // scene.add(spotLightHelper);
+        }
+        function addPointLight({ x = 0, y = 0, z = 0, intensity = 1, helper = false }) {
+            var spotLight = new THREE.PointLight(0xffffff);
+            spotLight.name = "Front Spot Light"
+            spotLight.castShadow = true;
+            spotLight.intensity = intensity
+            spotLight.decay = 2
+
+            spotLight.position.set(x, y, z);
+            if (helper) {
+                scene.add(new THREE.PointLightHelper(spotLight))
+            } else {
+                scene.add(spotLight);
+            }
             // var spotLightHelper = new THREE.SpotLightHelper(spotLight);
             // scene.add(spotLightHelper);
         }
         function createBoard(refDimension) {
-            let geometry = new THREE.BoxGeometry(refDimension.x + 25, refDimension.y + 25, 2);
+            let geometry = new THREE.BoxGeometry(refDimension.x + 1000, refDimension.y + 1000, 2);
             let material = new THREE.MeshStandardMaterial({ color: 0x234e85 });
             let mesh = new THREE.Mesh(geometry, material);
             mesh.name = 'board'
@@ -280,7 +301,9 @@
             charGroup.name = "Characters";
             for (let i = 0; fontGeometries.length > i; i++) {
                 let mesh = new THREE.Mesh(fontGeometries[i], new THREE.MeshStandardMaterial(font.material))
+                console.log(mesh.clone())
                 mesh.position.x = prevCharsTotalWidth;
+                fontGeometries[i].computeBoundingBox();
                 prevCharsTotalWidth = prevCharsTotalWidth + new THREE.Box3().setFromObject(mesh).getSize().x + font.charOffset;
                 charGroup.add(mesh);
             };
@@ -297,12 +320,13 @@
         function getCharGeometryArray() {
             let charGeos = [];
             for (var i = 0; font.text.length > i; i++) {
-                charGeos.push(new THREE.TextBufferGeometry(font.text.charAt(i), {
+                let geometry = new THREE.TextBufferGeometry(font.text.charAt(i), {
                     font: font.geometry,
                     size: font.size,
                     height: font.height,
                     curveSegments: font.curveSegments,
-                }))
+                })
+                charGeos.push(geometry);
             }
             return charGeos;
         }
@@ -316,19 +340,15 @@
             return geometry;
         }
         function getFontMaterial() {
+            let envMap = getEnvironmentMap();
             let parameters = {};
             Object.keys(baseMaterials[font.baseMaterial]).forEach(key => {
-                parameters.emissive = 0x00000;
-                parameters.emissiveIntensity = 1;
-                parameters.roughness = 0.1;
-                parameters.metalness = .5
-                // console.log(baseMaterials[baseMaterial][key])
-                // if (key == 'displacementMap') return;
-                // if(key == 'metalness')  return textMaterial[key] = baseMaterials[baseMaterial][key];
-                // if(key == 'roughness')  return textMaterial[key] = baseMaterials[baseMaterial][key];
-                // textMaterial[key] = baseMaterials[baseMaterial][key];
-                // textMaterial[key].wrapS = textMaterial[key].wrapT = THREE.RepeatWrapping;
-                // textMaterial[key].repeat.set(0.20, 0.10);
+                parameters.emissive = 0xFFFFFF;
+                parameters.emissiveIntensity = 2;
+                parameters.roughness = 0;
+                parameters.metalness = 0;
+                parameters.envMap = envMap;
+                // parameters.transparent= true;
             })
             parameters.color = parseInt(font.color);
             let material = new THREE.MeshStandardMaterial(parameters);
@@ -393,15 +413,26 @@
             })
         }
         function updateFontHeight() {
+            console.log('test')
             let height = document.getElementById('fontHeight').value
             if (!(height < 3)) {
-                updateFont({ height: parsetInt(height) });
+                updateFont({ height: parseInt(height) });
             }
             // console.log(document.getElementById('fontHeight'))
         }
         function changeCharacterOffset() {
             let offset = document.getElementById('characterOffset').value;
             if (offset) updateFont({ charOffset: parseInt(offset) });
+        }
+        function getEnvironmentMap() {
+            var loader = new THREE.CubeTextureLoader();
+            loader.setPath('./envMap/GamlaStan2/');
+            var textureCube = loader.load([
+                'posx.jpg', 'negx.jpg',
+                'posy.jpg', 'negy.jpg',
+                'posz.jpg', 'negz.jpg'
+            ]);
+            return textureCube;
         }
     </script>
     <script>
@@ -412,8 +443,9 @@
         var renderer = createRenderer({ dimension: { width: 600, height: 300 }, antialias: true, shadowMap: true });
         var camera = createCamera({ fov: 75, aspect: (600 / 300) });
         var controls = createOrbitControl(camera, renderer.domElement);
-        addAmbientLight({ intensity: 1, color: 0x404040 });
-        addSpotLight(30, 30, 100);
+        // addAmbientLight({ intensity: 0, color: 0x404040 });
+        addSpotLight({ x: 30, y: 60, z: 200, intensity: 0.7 });
+        addPointLight({ x: -33, y: 00, z: 5, intensity: 1 });
         var font = {
             size: 18,
             height: 5,
