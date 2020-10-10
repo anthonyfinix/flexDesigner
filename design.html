@@ -70,12 +70,12 @@
                                 <div id="collapseOne" class="collapse show" aria-labelledby="headingOne"
                                     data-parent="#accordionExample">
                                     <div class="card-body">
-                                        <div class="form-groupOthers">
+                                        <div class="form-group">
                                             <label for="">Enter your text</label>
                                             <input id="textInput" type="text" class="form-control"
                                                 onkeyup="changeText()" />
                                         </div>
-                                        <div class="form-groupOthers">
+                                        <div class="form-group">
                                             <label for="">Font Type</label>
                                             <select id="fontType" class="form-control" onchange="changeFontStyle()">
                                                 <option value="helvetiker_regular.typeface">Helvetica</option>
@@ -90,19 +90,55 @@
                                             </select>
                                         </div>
                                         <div class="form-row">
-                                            <div class="form-groupOthers col">
+                                            <div class="form-group col">
                                                 <label for="">Change Text Color</label>
                                                 <div class="color-picker shadow"></div>
                                             </div>
-                                            <div class="form-groupOthers col">
+                                            <div class="form-group col">
                                                 <label for="">Enter Text Height</label>
                                                 <input id="fontHeight" style="max-width: 80px;" type="number"
                                                     class="form-control" onkeyup="updateFontHeight()" />
                                             </div>
-                                            <div class="form-groupOthers col">
+                                            <div class="form-group col">
                                                 <label for="">Enter Character Space</label>
                                                 <input id="characterOffset" style="max-width: 80px;" type="number"
                                                     class="form-control" onkeyup="changeCharacterOffset()" />
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col">
+                                                <label> Pos X</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-btn">
+                                                        <button type="button" class="btn btn-danger btn-number">
+                                                            +
+                                                        </button>
+                                                    </span>
+                                                    <input type="text" name="quant[2]" class="form-control input-number"
+                                                        value="0">
+                                                    <span class="input-group-btn">
+                                                        <button type="button" class="btn btn-success btn-number">
+                                                            -
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group col">
+                                                <label> Pos Y</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-btn">
+                                                        <button type="button" class="btn btn-danger btn-number">
+                                                            +
+                                                        </button>
+                                                    </span>
+                                                    <input type="text" name="quant[2]" class="form-control input-number"
+                                                        value="0">
+                                                    <span class="input-group-btn">
+                                                        <button type="button" class="btn btn-success btn-number">
+                                                            -
+                                                        </button>
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -152,10 +188,20 @@
     <script src="./node_modules/three/build/three.min.js"></script>
     <script src="./node_modules/three/examples/js/controls/OrbitControls.js"></script>
     <script src="./js/colorPicker.js"></script>
+    <script src="./node_modules/three/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="./node_modules/three/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="./node_modules/three/examples/js/postprocessing/ShaderPass.js"></script>
+    <script src="./node_modules/three/examples/js/postprocessing/MaskPass.js  "></script>
+    <script src="./node_modules/three/examples/js/shaders/CopyShader.js"></script>
+    <script src="./node_modules/three/examples/js/shaders/FXAAShader.js"></script>
+    <script src="./node_modules/three/examples/js/shaders/LuminosityHighPassShader.js"></script>
+    <script src="./node_modules/three/examples/js/postprocessing/UnrealBloomPass.js"></script>
     <script>
         function animate() {
+
             requestAnimationFrame(animate);
-            renderer.render(scene, camera);
+            // renderer.render(scene, camera);
+            composer.render();
             controls.update();
         }
         function createCamera({
@@ -180,13 +226,13 @@
         }
         function createRenderer({
             dimension = { width: window.innerWidth, height: window.innerHeight },
-            antialias = false,
+            antialias = true,
             shadowMap = false,
             element = document.getElementById('render')
         }) {
-            var renderer = new THREE.WebGLRenderer({ antialias: antialias });
+            var renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(dimension.width, dimension.height);
-            renderer.antialias = antialias
+            renderer.toneMapping = THREE.ReinhardToneMapping;
             renderer.shadowMap.enabled = shadowMap;
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             element.appendChild(renderer.domElement);
@@ -237,7 +283,8 @@
             let geometry = new THREE.BoxGeometry(refDimension.x + 1000, refDimension.y + 1000, 2);
             let material = new THREE.MeshStandardMaterial({ color: 0x234e85 });
             let mesh = new THREE.Mesh(geometry, material);
-            mesh.name = 'board'
+            mesh.name = 'board';
+            mesh.receiveShadow = true;
             // mesh.position.z = font.mesh.position.z - 1;
             // mesh.position.x = Math.abs(font.mesh.position.x + refDimension.x / 2);
             // mesh.position.y = Math.abs(font.mesh.position.y + refDimension.y / 2);
@@ -301,7 +348,7 @@
             charGroup.name = "Characters";
             for (let i = 0; fontGeometries.length > i; i++) {
                 let mesh = new THREE.Mesh(fontGeometries[i], new THREE.MeshStandardMaterial(font.material))
-                console.log(mesh.clone())
+                mesh.castShadow = true;
                 mesh.position.x = prevCharsTotalWidth;
                 fontGeometries[i].computeBoundingBox();
                 prevCharsTotalWidth = prevCharsTotalWidth + new THREE.Box3().setFromObject(mesh).getSize().x + font.charOffset;
@@ -310,6 +357,7 @@
             let groupDimension = new THREE.Box3().setFromObject(charGroup).getSize();
             charGroup.position.x = charGroup.position.x - (groupDimension.x / 2)
             charGroup.position.y = charGroup.position.y - (groupDimension.y / 2)
+            charGroup.position.z = charGroup.position.z + 1.7
             // console.log(groupDimension.x / 2)
             board = createBoard(groupDimension);
             group.add(board);
@@ -344,8 +392,8 @@
             let parameters = {};
             Object.keys(baseMaterials[font.baseMaterial]).forEach(key => {
                 parameters.emissive = 0xFFFFFF;
-                parameters.emissiveIntensity = 2;
-                parameters.roughness = 0;
+                parameters.emissiveIntensity = 1;
+                parameters.roughness = 1;
                 parameters.metalness = 0;
                 parameters.envMap = envMap;
                 // parameters.transparent= true;
@@ -436,16 +484,21 @@
         }
     </script>
     <script>
+        var params = {
+            exposure: 1,
+            bloomStrength: 0.7,
+            bloomThreshold: .0,
+            bloomRadius: 0
+        };
         createPicker();
         var group = new THREE.Group();
         group.name = 'Flex'
         var scene = createScene({ background: parseInt(0xEAEAEA) });
-        var renderer = createRenderer({ dimension: { width: 600, height: 300 }, antialias: true, shadowMap: true });
+        var renderer = createRenderer({ dimension: { width: 600, height: 300 }, shadowMap: true });
         var camera = createCamera({ fov: 75, aspect: (600 / 300) });
         var controls = createOrbitControl(camera, renderer.domElement);
         // addAmbientLight({ intensity: 0, color: 0x404040 });
-        addSpotLight({ x: 30, y: 60, z: 200, intensity: 0.7 });
-        addPointLight({ x: -33, y: 00, z: 5, intensity: 1 });
+        addSpotLight({ x: 40, y: 60, z: 110, intensity: 0.3 });
         var font = {
             size: 18,
             height: 5,
@@ -484,6 +537,22 @@
         }
         loadFont()
         scene.add(group);
+        var renderScene = new THREE.RenderPass(scene, camera);
+        var fxaaPass = new THREE.ShaderPass(THREE.FXAAShader);
+        var pixelRatio = renderer.getPixelRatio();
+
+        fxaaPass.material.uniforms['resolution'].value.x = 1 / (document.getElementById('render').offsetWidth * pixelRatio);
+        fxaaPass.material.uniforms['resolution'].value.y = 1 / (document.getElementById('render').offsetHeight * pixelRatio);
+        var bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+        bloomPass.threshold = params.bloomThreshold;
+        bloomPass.strength = params.bloomStrength;
+        bloomPass.radius = params.bloomRadius;
+
+
+        composer = new THREE.EffectComposer(renderer);
+        composer.addPass(renderScene);
+        composer.addPass(bloomPass);
+        composer.addPass(fxaaPass)
         animate();
     </script>
 
