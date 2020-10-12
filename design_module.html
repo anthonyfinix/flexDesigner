@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banner</title>
+    <link rel="stylesheet" href="./css/colorPicker.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <style>
+        canvas:focus {
+            outline: none;
+        }
+
+        #render {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <a class="navbar-brand" href="#">Flex Designer</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="./index.html">Home <span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Products</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./design.html">Design</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <section class="py-5 my-5">
+            <div class="container">
+                <div class="row mt-5">
+                    <div class="col-md-6 order-2">
+                        <div id="render"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="accordion" id="accordionExample">
+                            <div class="card">
+                                <div class="card-header" id="headingOne">
+                                    <h2 class="mb-0">
+                                        <button class="btn btn-link btn-block text-left" type="button"
+                                            data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
+                                            aria-controls="collapseOne">
+                                            Text
+                                        </button>
+                                    </h2>
+                                </div>
+
+                                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne"
+                                    data-parent="#accordionExample">
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label for="">Enter your text</label>
+                                            <input id="textInput" type="text" class="form-control"
+                                                onkeyup="changeText()" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="">Font Type</label>
+                                            <select id="fontType" class="form-control" onchange="changeFontStyle()">
+                                                <option value="helvetiker_regular.typeface">Helvetica</option>
+                                                <option value="Quilline Script Thin_Regular.typeface">Quilline Script
+                                                </option>
+                                                <option value="Deftone Stylus_Regular.typeface">Deftone Stylus</option>
+                                                <option value="Black Jack_Regular.typeface">Black Jack</option>
+                                                <option value="Youre Gone_Regular.typeface">Youre GOne</option>
+                                                <option value="Alba_Regular">Alba Regular</option>
+                                                <option value="NokiaKokia_Regular">Nokia Regular</option>
+                                                <option value="Heebo_Regular">Heebo_Regular</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col">
+                                                <label for="">Change Text Color</label>
+                                                <div class="color-picker shadow"></div>
+                                            </div>
+                                            <div class="form-group col">
+                                                <label for="">Enter Text Height</label>
+                                                <input id="fontHeight" style="max-width: 80px;" type="number"
+                                                    class="form-control" onkeyup="updateFontHeight()" />
+                                            </div>
+                                            <div class="form-group col">
+                                                <label for="">Enter Character Space</label>
+                                                <input id="characterOffset" style="max-width: 80px;" type="number"
+                                                    class="form-control" onkeyup="changeCharacterOffset()" />
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col">
+                                                <label> Pos X</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-btn">
+                                                        <button type="button" class="btn btn-danger btn-number">
+                                                            +
+                                                        </button>
+                                                    </span>
+                                                    <input type="text" name="quant[2]" class="form-control input-number"
+                                                        value="0">
+                                                    <span class="input-group-btn">
+                                                        <button type="button" class="btn btn-success btn-number">
+                                                            -
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group col">
+                                                <label> Pos Y</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-btn">
+                                                        <button type="button" class="btn btn-danger btn-number">
+                                                            +
+                                                        </button>
+                                                    </span>
+                                                    <input type="text" name="quant[2]" class="form-control input-number"
+                                                        value="0">
+                                                    <span class="input-group-btn">
+                                                        <button type="button" class="btn btn-success btn-number">
+                                                            -
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header" id="headingTwo">
+                                    <h2 class="mb-0">
+                                        <button class="btn btn-link btn-block text-left collapsed" type="button"
+                                            data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false"
+                                            aria-controls="collapseTwo">
+                                            Material
+                                        </button>
+                                    </h2>
+                                </div>
+                                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
+                                    data-parent="#accordionExample">
+                                    <div class="card-body">
+                                        <div class="form-groupOthers">
+                                            <label for="">Material</label>
+                                            <select id="material" class="form-control" onchange="changeMaterial()">
+                                                <option value="metal">Metal</option>
+                                                <option value="wood">Wood</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
+        <script type="module" src="./js/main.js"></script>
+</body>
+
+</html>

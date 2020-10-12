@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@simonwep/pickr": "^1.7.4",
+    "http-server": "^0.12.3",
     "three": "^0.121.1"
   }
 }
